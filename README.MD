@@ -1,0 +1,1 @@
+Gem is your AI agent that perform s realtime screen analysis and aids you in whatever you are currently doing
