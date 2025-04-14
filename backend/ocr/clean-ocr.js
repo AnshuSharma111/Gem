@@ -1,6 +1,13 @@
 import { configDotenv } from "dotenv";
 import Groq from "groq-sdk";
-configDotenv();
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env from project root
+configDotenv({ path: path.resolve(__dirname, "../../.env") });
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -35,7 +42,7 @@ then the output should be:
     more updates and get ready to YOUR WAY TO SUCCESS! e', Best regards, event '25 Organizing Team",
   "topic": "reading event email"
 }
-AND NO EXTRA TEXT OR EXPLANATIONS. If you must, add a "remarks" field with any additional information.
+AND NO EXTRA TEXT OR EXPLANATIONS, AND ONLY RETURN A NON-MARKDOWN JSON OBJECT.
 If nothing useful is found, return the original text as "cleaned_text" and "unrecognised" as the topic.
 
 OCR input:

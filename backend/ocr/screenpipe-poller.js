@@ -3,11 +3,16 @@ import { getCleanedTextWithCache } from "./cache-ocr.js";
 import { configDotenv } from "dotenv";
 import { addToThread, finalizeOldThreads } from "../threads/thread-manager.js";
 import { logToFile } from "../utility/logger.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
-configDotenv();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+configDotenv({ path: path.resolve(__dirname, "../../.env") });
 
 const pollFreq = parseInt(process.env.POLL_FREQ || "10");
-const screenpipePort = process.env.SCREENPIPE_PORT || "3010";
+const screenpipePort = process.env.SCREENPIPE_PORT || "3030";
 
 if (typeof globalThis.self === "undefined") {
   globalThis.self = globalThis;

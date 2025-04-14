@@ -1,5 +1,14 @@
 import fs from "fs";
-const LOG_PATH = "./debug.log";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Resolve this file's directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Final log path — rooted at project root (2 levels up from /backend/utility/logger.js)
+const LOG_PATH = path.resolve(__dirname, "../../debug.log");
+console.log("Log path:", LOG_PATH);
 
 export function logToFile(label, data) {
   const timestamp = new Date().toISOString();

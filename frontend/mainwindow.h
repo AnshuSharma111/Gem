@@ -14,11 +14,15 @@ public:
 private slots:
     void onStartClicked();
     void onStopClicked();
+    void updateLogArea();
+    void onClearClicked();
 
 private:
     QPushButton *startButton;
     QPushButton *stopButton;
     QTextEdit *logArea;
+    QString lastLogText;
+    QPushButton *clearButton;
 };
 
 #endif // MAINWINDOW_H
