@@ -232,3 +232,6 @@ CMakeLists.txt.user*
 # --------
 *.dll
 *.exe
+
+# Dev Files
+thread-data

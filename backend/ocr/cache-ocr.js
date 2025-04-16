@@ -1,4 +1,3 @@
-// ocr/cache-ocr.js
 import { createClient } from "redis";
 import crypto from "crypto";
 import { cleanOCR } from "./clean-ocr.js";
@@ -10,7 +9,7 @@ const redis = createClient();
 try {
   await redis.connect();
 } catch (err) {
-  console.error("❌ Redis failed to connect. Using LLM-only mode.");
+  logToFile("❌ Redis failed to connect. Using LLM-only mode.");
 }
 
 function generateCacheKey(text) {
@@ -18,7 +17,7 @@ function generateCacheKey(text) {
   return `ocr:${hash}`;
 }
 
-export async function getCleanedTextWithCache(rawText) {
+export async function getCleanedTextWithCache(rawText, app_name, window_name, browser_url) {
   const key = generateCacheKey(rawText);
   const cached = await redis.get(key);
 
@@ -33,7 +32,7 @@ export async function getCleanedTextWithCache(rawText) {
     }
   }
 
-  const cleaned = await cleanOCR(rawText);
+  const cleaned = await cleanOCR(rawText, app_name, window_name, browser_url);
   logToFile("🧼 LLM Cleaned OCR", cleaned);
 
   const cleanedJSON = parseLLMJson(cleaned);
@@ -49,5 +48,5 @@ export async function getCleanedTextWithCache(rawText) {
 export async function flushOcrCache() {
   const keys = await redis.keys("ocr:*");
   for (const key of keys) await redis.del(key);
-  console.log(`🗑️ Flushed ${keys.length} OCR cache entries`);
+  logToFile(`🗑️ Flushed ${keys.length} OCR cache entries`);
 }

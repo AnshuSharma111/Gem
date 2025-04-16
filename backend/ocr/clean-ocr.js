@@ -11,7 +11,7 @@ configDotenv({ path: path.resolve(__dirname, "../../.env") });
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-export async function cleanOCR(text) {
+export async function cleanOCR(text, app_name, window_name, browser_url) {
   const prompt = `
 You are an intelligent screen text cleaner. You receive noisy OCR data from user screens and must extract only the relevant content.
 
@@ -42,15 +42,17 @@ then the output should be:
     more updates and get ready to YOUR WAY TO SUCCESS! e', Best regards, event '25 Organizing Team",
   "topic": "reading event email"
 }
-AND NO EXTRA TEXT OR EXPLANATIONS, AND ONLY RETURN A NON-MARKDOWN JSON OBJECT.
+AND NO EXTRA TEXT OR EXPLANATIONS. ONLY RETURN A PARSABLE NO MARKDOWN JSON OBJECT.
 If nothing useful is found, return the original text as "cleaned_text" and "unrecognised" as the topic.
 
+The app name is "${app_name}", the window name is "${window_name}", and the browser url is "${browser_url}".
+Return the { "cleaned_text": str , "topic" : str} JSON ONLY
 OCR input:
 ${text}
 `;
 
   const response = await groq.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+    model: "gemma2-9b-it", // "llama-3.3-70b-versatile"
     messages: [{ role: "user", content: prompt }]
   });
 

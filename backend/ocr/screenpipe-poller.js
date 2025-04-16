@@ -38,28 +38,27 @@ async function extractAndCleanScreenData() {
       const { cleaned_text, topic } = await getCleanedTextWithCache(rawText);
       logToFile("🧼 Cleaned OCR", { rawText, cleaned_text, topic });
 
-      addToThread({
+      addToThread(topic, {
         timestamp: item.content.timestamp,
         app_name: item.content.appName,
         window_name: item.content.windowName,
         browser_url: item.content.browser_url,
-        text: cleaned_text,
-        topic
+        text: cleaned_text
       });
 
       const finalized = finalizeOldThreads();
-      if (finalized.length > 0) {
+      if (finalized && finalized.length > 0) {
         logToFile("🧵 Finalized Threads", finalized);
         for (const thread of finalized) {
-          console.log("\nThread:", thread.topic);
-          console.log("App:", thread.app_name);
-          console.log("Events:", thread.events.join("\n"));
+          logToFile("\nThread:", thread.topic);
+          logToFile("App:", thread.app_name);
+          logToFile("Events:", thread.events.join("\n"));
         }
       }
     }
   } catch (err) {
     logToFile("❌ Poller Error", err.message);
-    console.error("Error during screenpipe polling:", err);
+    logToFile("Error during screenpipe polling:", err);
   }
 }
 
