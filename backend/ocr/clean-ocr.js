@@ -18,7 +18,7 @@ You are an intelligent screen text cleaner. You receive noisy OCR data from user
 Instructions:
 - Remove noise such as browser tabs, bookmarks, IDE folders, or sidebar menus.
 - Identify the primary activity from the screen text.
-- Label this as a topic (e.g. "reading event email", "coding in VSCode", "reading article").
+- Label this as a topic [Be verbose and capture all key details of what user is doing]. (e.g., "reading documentation on [topic] from chrome", "reading mail of conference invitation from [gmail/outlook]", "coding in Python using [API/SDK] in [IDE]", "browsing [product] on [site]")
 - Return a **valid JSON** object in this format:
 {
   "cleaned_text": "...",
@@ -40,7 +40,7 @@ then the output should be:
     https://wwwyoutube/live/ 17 Date: April 11th A Time: 9 PM of During the ceremony we'll take you through the entire event 
     process, addressing major areas of common doubts Mark your clocks and get ready to EMBARK ON THIS ADVENTURE' Stay tuned for 
     more updates and get ready to YOUR WAY TO SUCCESS! e', Best regards, event '25 Organizing Team",
-  "topic": "reading event email"
+  "topic": "reading event invitation email on gmail"
 }
 AND NO EXTRA TEXT OR EXPLANATIONS. ONLY RETURN A PARSABLE NO MARKDOWN JSON OBJECT.
 If nothing useful is found, return the original text as "cleaned_text" and "unrecognised" as the topic.

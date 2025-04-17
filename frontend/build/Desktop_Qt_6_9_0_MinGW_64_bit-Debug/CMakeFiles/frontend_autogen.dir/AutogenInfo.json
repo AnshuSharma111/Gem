@@ -336,6 +336,12 @@
 			"MU",
 			"EWIEGA46WW/moc_mainwindow.cpp",
 			null
+		],
+		[
+			"D:/gem/frontend/suggestionpopup.h",
+			"MU",
+			"EWIEGA46WW/moc_suggestionpopup.cpp",
+			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -410,7 +416,8 @@
 	"SOURCES" : 
 	[
 		[ "D:/gem/frontend/main.cpp", "MU", null ],
-		[ "D:/gem/frontend/mainwindow.cpp", "MU", null ]
+		[ "D:/gem/frontend/mainwindow.cpp", "MU", null ],
+		[ "D:/gem/frontend/suggestionpopup.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],
