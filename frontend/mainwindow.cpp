@@ -10,16 +10,20 @@
 #include <QFile>
 #include <QTextStream>
 #include <QScrollBar>
-#include <QTabWidget>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QLineEdit>
 #include "suggestionpopup.h"
+#include "debugwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    setWindowTitle("Gem✨");
+
     QWidget *centralWidget = new QWidget(this);
     QVBoxLayout *mainLayout = new QVBoxLayout();
 
@@ -27,63 +31,75 @@ MainWindow::MainWindow(QWidget *parent)
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     startButton = new QPushButton("Start");
     stopButton = new QPushButton("Stop");
-    settingsButton = new QPushButton("Settings");
     statusLabel = new QLabel("Status: Idle", this);
 
     buttonLayout->addWidget(startButton);
     buttonLayout->addWidget(stopButton);
-    buttonLayout->addWidget(settingsButton);
     mainLayout->addLayout(buttonLayout);
     mainLayout->addWidget(statusLabel);
 
-    // --- Tabs ---
-    tabWidget = new QTabWidget(this);
-
-    // Settings Tab
+    // --- Settings Layout ---
     QWidget *settingsTab = new QWidget();
     QVBoxLayout *settingsLayout = new QVBoxLayout();
+
+    QLabel *appLabel = new QLabel("App Blacklist:");
+    appBlacklistList = new QListWidget();
+    appInput = new QLineEdit();
+    addAppButton = new QPushButton("Add App");
+    QPushButton *removeAppButton = new QPushButton("Remove Selected App");
+
+    QHBoxLayout *appButtonsLayout = new QHBoxLayout();
+    appButtonsLayout->addWidget(addAppButton);
+    appButtonsLayout->addWidget(removeAppButton);
+
+    QLabel *winLabel = new QLabel("Window Title Blacklist:");
+    windowBlacklistList = new QListWidget();
+    windowInput = new QLineEdit();
+    addWindowButton = new QPushButton("Add Window");
+    QPushButton *removeWindowButton = new QPushButton("Remove Selected Window");
+
+    QHBoxLayout *winButtonsLayout = new QHBoxLayout();
+    winButtonsLayout->addWidget(addWindowButton);
+    winButtonsLayout->addWidget(removeWindowButton);
+
     QLabel *label = new QLabel("Preferred Mail:", this);
     mailDropdown = new QComboBox(this);
     mailDropdown->addItems({"none", "gmail", "outlook"});
+
+    settingsLayout->addWidget(appLabel);
+    settingsLayout->addWidget(appBlacklistList);
+    settingsLayout->addWidget(appInput);
+    settingsLayout->addLayout(appButtonsLayout);
+    settingsLayout->addWidget(winLabel);
+    settingsLayout->addWidget(windowBlacklistList);
+    settingsLayout->addWidget(windowInput);
+    settingsLayout->addLayout(winButtonsLayout);
     settingsLayout->addWidget(label);
     settingsLayout->addWidget(mailDropdown);
+
     settingsTab->setLayout(settingsLayout);
-    tabWidget->addTab(settingsTab, "Settings");
+    mainLayout->addWidget(settingsTab);
 
-    // Debug Tab (initially hidden)
-    debugTab = new QWidget();
-    QVBoxLayout *debugLayout = new QVBoxLayout();
-    logArea = new QTextEdit();
-    logArea->setReadOnly(true);
-    clearButton = new QPushButton("Clear Logs");
-    debugLayout->addWidget(logArea);
-    debugLayout->addWidget(clearButton);
-    debugTab->setLayout(debugLayout);
-    debugTabIndex = tabWidget->addTab(debugTab, "Debug");
-    tabWidget->removeTab(debugTabIndex);  // hide initially
+    // Debug window
+    debugWindow = new DebugWindow(nullptr);
+    debugWindow->hide();
 
-    mainLayout->addWidget(tabWidget);
     centralWidget->setLayout(mainLayout);
     setCentralWidget(centralWidget);
 
-    // Load saved preference
     loadSettings();
 
-    // Connections
     connect(startButton, &QPushButton::clicked, this, &MainWindow::onStartClicked);
     connect(stopButton, &QPushButton::clicked, this, &MainWindow::onStopClicked);
     connect(mailDropdown, &QComboBox::currentTextChanged, this, &MainWindow::savePreference);
-    connect(clearButton, &QPushButton::clicked, this, &MainWindow::onClearClicked);
+    connect(addAppButton, &QPushButton::clicked, this, &MainWindow::addAppToBlacklist);
+    connect(addWindowButton, &QPushButton::clicked, this, &MainWindow::addWindowToBlacklist);
+    connect(removeAppButton, &QPushButton::clicked, this, &MainWindow::removeSelectedApp);
+    connect(removeWindowButton, &QPushButton::clicked, this, &MainWindow::removeSelectedWindow);
 
-    // Timer for log refresh
-    QTimer *logTimer = new QTimer(this);
-    connect(logTimer, &QTimer::timeout, this, &MainWindow::updateLogArea);
-    logTimer->start(2000); // every 2 seconds
-
-    // Timer to check fornew suggestions
     QTimer *suggestionTimer = new QTimer(this);
     connect(suggestionTimer, &QTimer::timeout, this, &MainWindow::checkForSuggestion);
-    suggestionTimer->start(3000); // every 3 seconds
+    suggestionTimer->start(3000);
 }
 
 void MainWindow::onStartClicked() {
@@ -123,49 +139,13 @@ void MainWindow::loadSettings() {
             QString pref = doc.object().value("preferredMailMethod").toString();
             int index = mailDropdown->findText(pref);
             if (index >= 0) mailDropdown->setCurrentIndex(index);
-        }
-    }
-}
 
-void MainWindow::onClearClicked() {
-    QString logPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../debug.log");
-    QFile file(QDir::cleanPath(logPath));
+            // Load blacklist
+            QJsonArray apps = doc.object().value("blacklistedApps").toArray();
+            for (auto a : apps) appBlacklistList->addItem(a.toString());
 
-    if (file.exists()) {
-        if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            file.close();
-            logArea->clear();
-            lastLogText.clear();
-        }
-    }
-}
-
-void MainWindow::updateLogArea() {
-    QString logPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../debug.log");
-    QFile file(QDir::cleanPath(logPath));
-
-    if (!file.exists()) {
-        return;
-    }
-
-    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QTextStream in(&file);
-        QString currentLog = in.readAll();
-        file.close();
-
-        if (currentLog != lastLogText) {
-            QScrollBar *scrollBar = logArea->verticalScrollBar();
-            bool isAtBottom = scrollBar->value() == scrollBar->maximum();
-
-            QString newText = currentLog.mid(lastLogText.length());
-            logArea->moveCursor(QTextCursor::End);
-            logArea->insertPlainText(newText);
-
-            if (isAtBottom) {
-                scrollBar->setValue(scrollBar->maximum());
-            }
-
-            lastLogText = currentLog;
+            QJsonArray wins = doc.object().value("blacklistedWindows").toArray();
+            for (auto w : wins) windowBlacklistList->addItem(w.toString());
         }
     }
 }
@@ -173,13 +153,14 @@ void MainWindow::updateLogArea() {
 void MainWindow::keyPressEvent(QKeyEvent *event) {
     if (event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier) &&
         event->key() == Qt::Key_D) {
-        if (tabWidget->indexOf(debugTab) == -1) {
-            debugTabIndex = tabWidget->addTab(debugTab, "Debug");
+        if (debugWindow->isVisible()) {
+            debugWindow->hide();
         } else {
-            tabWidget->removeTab(debugTabIndex);
+            debugWindow->show();
         }
     }
 }
+
 void MainWindow::sendResponse(bool accepted) {
     QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../user_response.json");
     QFile file(path);
@@ -223,5 +204,61 @@ void MainWindow::checkForSuggestion() {
         showSuggestion(message);
 
         file.remove(); // Prevent repeat trigger
+    }
+}
+
+void MainWindow::saveBlacklistToSettings() {
+    QJsonObject obj;
+    obj["preferredMailMethod"] = mailDropdown->currentText();
+
+    QJsonArray apps, windows;
+    for (int i = 0; i < appBlacklistList->count(); ++i)
+        apps.append(appBlacklistList->item(i)->text());
+
+    for (int i = 0; i < windowBlacklistList->count(); ++i)
+        windows.append(windowBlacklistList->item(i)->text());
+
+    obj["blacklistedApps"] = apps;
+    obj["blacklistedWindows"] = windows;
+
+    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../settings.json");
+    QFile file(path);
+    if (file.open(QIODevice::WriteOnly)) {
+        file.write(QJsonDocument(obj).toJson());
+        file.close();
+    }
+}
+
+void MainWindow::removeSelectedApp() {
+    QListWidgetItem *item = appBlacklistList->currentItem();
+    if (item) {
+        delete appBlacklistList->takeItem(appBlacklistList->row(item));
+        saveBlacklistToSettings();
+    }
+}
+
+void MainWindow::removeSelectedWindow() {
+    QListWidgetItem *item = windowBlacklistList->currentItem();
+    if (item) {
+        delete windowBlacklistList->takeItem(windowBlacklistList->row(item));
+        saveBlacklistToSettings();
+    }
+}
+
+void MainWindow::addAppToBlacklist() {
+    QString app = appInput->text().trimmed();
+    if (!app.isEmpty()) {
+        appBlacklistList->addItem(app);
+        appInput->clear();
+        saveBlacklistToSettings();
+    }
+}
+
+void MainWindow::addWindowToBlacklist() {
+    QString win = windowInput->text().trimmed();
+    if (!win.isEmpty()) {
+        windowBlacklistList->addItem(win);
+        windowInput->clear();
+        saveBlacklistToSettings();
     }
 }

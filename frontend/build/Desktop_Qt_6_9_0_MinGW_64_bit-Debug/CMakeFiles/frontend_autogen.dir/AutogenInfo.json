@@ -332,6 +332,12 @@
 	"HEADERS" : 
 	[
 		[
+			"D:/gem/frontend/debugwindow.h",
+			"MU",
+			"EWIEGA46WW/moc_debugwindow.cpp",
+			null
+		],
+		[
 			"D:/gem/frontend/mainwindow.h",
 			"MU",
 			"EWIEGA46WW/moc_mainwindow.cpp",
@@ -415,6 +421,7 @@
 	"SETTINGS_FILE" : "D:/gem/frontend/build/Desktop_Qt_6_9_0_MinGW_64_bit-Debug/CMakeFiles/frontend_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[ "D:/gem/frontend/debugwindow.cpp", "MU", null ],
 		[ "D:/gem/frontend/main.cpp", "MU", null ],
 		[ "D:/gem/frontend/mainwindow.cpp", "MU", null ],
 		[ "D:/gem/frontend/suggestionpopup.cpp", "MU", null ]

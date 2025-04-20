@@ -81,6 +81,14 @@ build CMakeFiles/frontend.dir/suggestionpopup.cpp.obj: CXX_COMPILER__frontend_un
   OBJECT_DIR = CMakeFiles\frontend.dir
   OBJECT_FILE_DIR = CMakeFiles\frontend.dir
 
+build CMakeFiles/frontend.dir/debugwindow.cpp.obj: CXX_COMPILER__frontend_unscanned_Debug D$:/gem/frontend/debugwindow.cpp || cmake_object_order_depends_target_frontend
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
+  DEP_FILE = CMakeFiles\frontend.dir\debugwindow.cpp.obj.d
+  FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -ID:/gem/frontend/build/Desktop_Qt_6_9_0_MinGW_64_bit-Debug/frontend_autogen/include -isystem E:/Programs/Qt/6.9.0/mingw_64/include/QtCore -isystem E:/Programs/Qt/6.9.0/mingw_64/include -isystem E:/Programs/Qt/6.9.0/mingw_64/mkspecs/win32-g++ -isystem E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets -isystem E:/Programs/Qt/6.9.0/mingw_64/include/QtGui
+  OBJECT_DIR = CMakeFiles\frontend.dir
+  OBJECT_FILE_DIR = CMakeFiles\frontend.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target frontend
@@ -89,7 +97,7 @@ build CMakeFiles/frontend.dir/suggestionpopup.cpp.obj: CXX_COMPILER__frontend_un
 #############################################
 # Link the executable frontend.exe
 
-build frontend.exe: CXX_EXECUTABLE_LINKER__frontend_Debug CMakeFiles/frontend.dir/frontend_autogen/mocs_compilation.cpp.obj CMakeFiles/frontend.dir/main.cpp.obj CMakeFiles/frontend.dir/mainwindow.cpp.obj CMakeFiles/frontend.dir/suggestionpopup.cpp.obj | E$:/Programs/Qt/6.9.0/mingw_64/lib/libQt6Widgets.a E$:/Programs/Qt/6.9.0/mingw_64/lib/libQt6Gui.a E$:/Programs/Qt/6.9.0/mingw_64/lib/libQt6Core.a E$:/Programs/Qt/6.9.0/mingw_64/lib/libQt6EntryPoint.a || frontend_autogen frontend_autogen_timestamp_deps
+build frontend.exe: CXX_EXECUTABLE_LINKER__frontend_Debug CMakeFiles/frontend.dir/frontend_autogen/mocs_compilation.cpp.obj CMakeFiles/frontend.dir/main.cpp.obj CMakeFiles/frontend.dir/mainwindow.cpp.obj CMakeFiles/frontend.dir/suggestionpopup.cpp.obj CMakeFiles/frontend.dir/debugwindow.cpp.obj | E$:/Programs/Qt/6.9.0/mingw_64/lib/libQt6Widgets.a E$:/Programs/Qt/6.9.0/mingw_64/lib/libQt6Gui.a E$:/Programs/Qt/6.9.0/mingw_64/lib/libQt6Core.a E$:/Programs/Qt/6.9.0/mingw_64/lib/libQt6EntryPoint.a || frontend_autogen frontend_autogen_timestamp_deps
   FLAGS = -DQT_QML_DEBUG -g
   LINK_FLAGS = -mwindows
   LINK_LIBRARIES = E:/Programs/Qt/6.9.0/mingw_64/lib/libQt6Widgets.a  E:/Programs/Qt/6.9.0/mingw_64/lib/libQt6Gui.a  E:/Programs/Qt/6.9.0/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -lmingw32  E:/Programs/Qt/6.9.0/mingw_64/lib/libQt6EntryPoint.a  -lshell32  -ld3d11  -ldxgi  -ldxguid  -ld3d12  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32

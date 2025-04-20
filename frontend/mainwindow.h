@@ -7,7 +7,9 @@
 #include <QComboBox>
 #include <QTabWidget>
 #include <QKeyEvent>
+#include <QListWidget>
 #include <QLabel>
+#include "debugwindow.h"
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -21,28 +23,38 @@ public:
 private slots:
     void onStartClicked();
     void onStopClicked();
-    void onClearClicked();
-    void updateLogArea();
     void savePreference();
     void showSuggestion(const QString &text);
     void sendResponse(bool accepted);
     void checkForSuggestion();
+    void removeSelectedApp();
+    void removeSelectedWindow();
 
 private:
     QPushButton *startButton;
     QPushButton *stopButton;
     QPushButton *settingsButton;
 
-    QTextEdit *logArea;
     QPushButton *clearButton;
 
     QComboBox *mailDropdown;
-    QString lastLogText;
 
     QLabel *statusLabel;
 
     QTabWidget *tabWidget;
-    QWidget *debugTab;
+    DebugWindow *debugWindow;
+
+    QListWidget *appBlacklistList;
+    QListWidget *windowBlacklistList;
+    QLineEdit *appInput;
+    QLineEdit *windowInput;
+    QPushButton *addAppButton;
+    QPushButton *addWindowButton;
+
+    void loadBlacklistFromSettings();
+    void saveBlacklistToSettings();
+    void addAppToBlacklist();
+    void addWindowToBlacklist();
     int debugTabIndex;
 
     void loadSettings();

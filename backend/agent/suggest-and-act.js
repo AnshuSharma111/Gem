@@ -16,6 +16,9 @@ configDotenv({ path: path.resolve(__dirname, "../../.env") });
 const RESPONSE_PATH = path.resolve(__dirname, "../../user_response.json");
 const SUGGESTION_PATH = path.resolve(__dirname, "../../latest_suggestion.json");
 
+const cooldown = process.env.COOLDOWN || "12000"; // Time between prompting the user for a suggestion (in seconds)
+let lastSuggestionTime = 0; // Time of the last suggestion prompt
+
 let llmIsBusy = false;
 
 function writeLatestSuggestion(suggestion) {
@@ -23,35 +26,49 @@ function writeLatestSuggestion(suggestion) {
 }
 
 function waitForUserResponse(timeoutMs = 15000) {
-    return new Promise((resolve) => {
-        const start = Date.now();
+  return new Promise((resolve) => {
+    const start = Date.now();
 
-        const interval = setInterval(() => {
-        if (fs.existsSync(RESPONSE_PATH)) {
-            try {
-            const data = JSON.parse(fs.readFileSync(RESPONSE_PATH));
-            fs.unlinkSync(RESPONSE_PATH); // remove file after reading
-            clearInterval(interval);
-            resolve(data); // { accepted: true/false }
-            } catch { }
-        }
+    const interval = setInterval(() => {
+      if (fs.existsSync(RESPONSE_PATH)) {
+        try {
+          const raw = fs.readFileSync(RESPONSE_PATH);
+          fs.unlinkSync(RESPONSE_PATH); // delete before parsing (safe)
+          const response = JSON.parse(raw);
 
-        if (Date.now() - start > timeoutMs) {
-            clearInterval(interval);
-            resolve({ accepted: false });
+          clearInterval(interval);
+          resolve(response || { accepted: false });
+        } catch (err) {
+          console.error("❌ Error reading response file:", err);
+          fs.unlinkSync(RESPONSE_PATH); // clean it up
+          clearInterval(interval);
+          resolve({ accepted: false }); // fail safe
         }
-        }, 500);
-    });
+      }
+
+      if (Date.now() - start > timeoutMs) {
+        clearInterval(interval);
+        resolve({ accepted: false }); // timeout case
+      }
+    }, 500);
+  });
 }
-  
+
 export async function suggestAndAct() {
+    const now = Date.now();
+    if (now - lastSuggestionTime < cooldown) {
+      logToFile("🛑 Global cooldown active — skipping suggest cycle.");
+      return;
+    }
+
     if (llmIsBusy) {
       logToFile("⏳ LLM busy, skipping suggestion cycle.", "suggest-and-act");
       return { success: false, message: "LLM busy" };
     }
-  
+
+    lastSuggestionTime = now;
     const activeThreads = getActiveThreads();
-  
+
     if (activeThreads.length === 0) {
       logToFile("❌ No active threads to analyze.", "suggest-and-act");
       return { success: false, message: "No threads" };
