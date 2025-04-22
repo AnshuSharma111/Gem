@@ -10,6 +10,8 @@
 #include <QTimer>
 #include <QFrame>
 
+QList<SuggestionPopup*> SuggestionPopup::activePopups;
+
 SuggestionPopup::SuggestionPopup(const QString &message, QWidget *parent)
     : QWidget(parent, Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint)
 {
@@ -76,7 +78,8 @@ SuggestionPopup::SuggestionPopup(const QString &message, QWidget *parent)
     int startX = screenGeometry.right() + 10;
     int startY = finalY;
 
-    move(startX, startY);
+    activePopups.prepend(this);  // add to stack
+    repositionStack();
     show();
 
     // Slide-in animation
@@ -100,11 +103,29 @@ SuggestionPopup::SuggestionPopup(const QString &message, QWidget *parent)
 }
 
 void SuggestionPopup::onAccept() {
+    activePopups.removeOne(this);
     emit accepted();
     close();
 }
 
 void SuggestionPopup::onReject() {
+    activePopups.removeOne(this);
     emit rejected();
     close();
+}
+
+void SuggestionPopup::repositionStack() {
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect screenGeometry = screen->availableGeometry();
+    int baseX = screenGeometry.right() - width() - 20;
+    int baseY = screenGeometry.bottom() - height() - 20;
+
+    const int spacing = 12;
+    for (int i = 0; i < activePopups.size(); ++i) {
+        SuggestionPopup *popup = activePopups[i];
+        if (popup) {
+            int yOffset = baseY - i * (popup->height() + spacing);
+            popup->move(baseX, yOffset);
+        }
+    }
 }

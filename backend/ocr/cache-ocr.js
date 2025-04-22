@@ -19,8 +19,16 @@ function generateCacheKey(text) {
 
 export async function getCleanedTextWithCache(rawText, app_name, window_name, browser_url) {
   const key = generateCacheKey(rawText);
-  const cached = await redis.get(key);
-
+  let cached = null;
+  if (isRedisAvailable()) {
+    try {
+      cached = await redis.get(key);
+    } catch (err) {
+      logToFile("❌ Redis GET failed — fallback to LLM", err);
+    }
+  } else {
+    logToFile("⚠️ Redis not available — skipping cache.");
+  }
   if (cached) {
     try {
       const json = JSON.parse(cached);
@@ -28,7 +36,9 @@ export async function getCleanedTextWithCache(rawText, app_name, window_name, br
       return json;
     } catch (e) {
       logToFile("❌ Failed to parse cached OCR JSON", cached);
-      await redis.del(key); // Invalidate corrupt entry
+      if (isRedisAvailable()) {
+        await redis.del(key);
+      }
     }
   }
 
@@ -40,8 +50,10 @@ export async function getCleanedTextWithCache(rawText, app_name, window_name, br
     return { cleaned_text: rawText, topic: "unrecognised" };
   }
 
-  await redis.set(key, JSON.stringify(cleanedJSON), { EX: 600 });
-  logToFile("✅ OCR Cache Updated", cleanedJSON);
+  if (isRedisAvailable()) {
+    await redis.set(key, JSON.stringify(cleanedJSON), { EX: 600 });
+    logToFile("✅ OCR Cache Updated", cleanedJSON);
+  }
   return cleanedJSON;
 }
 
@@ -49,4 +61,8 @@ export async function flushOcrCache() {
   const keys = await redis.keys("ocr:*");
   for (const key of keys) await redis.del(key);
   logToFile(`🗑️ Flushed ${keys.length} OCR cache entries`);
+}
+
+function isRedisAvailable() {
+  return redis?.isReady || redis?.status === "ready";
 }

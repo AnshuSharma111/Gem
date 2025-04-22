@@ -589,3 +589,8 @@ tmp/
 /*-debug/
 /*-release/
 /out/
+
+# Docker
+Dockerfile.backend
+Dockerfile.gui
+docker-compose.yml

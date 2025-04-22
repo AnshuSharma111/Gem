@@ -10,6 +10,9 @@
 
 class SuggestionPopup : public QWidget {
     Q_OBJECT
+private:
+    static QList<SuggestionPopup*> activePopups;
+    void repositionStack();
 
 public:
     SuggestionPopup(const QString &message, QWidget *parent = nullptr);

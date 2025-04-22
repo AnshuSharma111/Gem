@@ -172,7 +172,7 @@ void MainWindow::sendResponse(bool accepted) {
 }
 
 void MainWindow::showSuggestion(const QString &text) {
-    SuggestionPopup *popup = new SuggestionPopup(text, this);
+    SuggestionPopup *popup = new SuggestionPopup(text, nullptr);
 
     connect(popup, &SuggestionPopup::accepted, this, [=]() {
         sendResponse(true);

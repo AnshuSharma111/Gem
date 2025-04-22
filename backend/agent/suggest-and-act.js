@@ -3,6 +3,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 
+import { randomUUID } from "crypto";
+
 import { logToFile } from "../utility/logger.js";
 import { getActiveThreads } from "../threads/thread-manager.js";
 import { suggestRelevantTools } from "./suggestion-agent.js";
