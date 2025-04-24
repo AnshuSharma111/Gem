@@ -118,7 +118,7 @@ void MainWindow::onStopClicked() {
 
 void MainWindow::savePreference() {
     QString selected = mailDropdown->currentText();
-    QString settingsPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../settings.json");
+    QString settingsPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/settings.json");
 
     qDebug() << "Saving to:" << settingsPath;
     QFile file(settingsPath);
@@ -130,7 +130,7 @@ void MainWindow::savePreference() {
 }
 
 void MainWindow::loadSettings() {
-    QString settingsPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../settings.json");
+    QString settingsPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/settings.json");
     QFile file(settingsPath);
     if (file.open(QIODevice::ReadOnly)) {
         QString json = file.readAll();
@@ -163,7 +163,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 }
 
 void MainWindow::sendResponse(bool accepted) {
-    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../user_response.json");
+    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/user_response.json");
     QFile file(path);
     if (file.open(QIODevice::WriteOnly)) {
         QTextStream out(&file);
@@ -209,7 +209,7 @@ void MainWindow::showSuggestion(const QString &text) {
 }
 
 void MainWindow::checkForSuggestion() {
-    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../latest_suggestion.json");
+    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/latest_suggestion.json");
     QFile file(path);
 
     if (!file.exists()) return;
@@ -246,7 +246,7 @@ void MainWindow::saveBlacklistToSettings() {
     obj["blacklistedApps"] = apps;
     obj["blacklistedWindows"] = windows;
 
-    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../settings.json");
+    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/settings.json");
     QFile file(path);
     if (file.open(QIODevice::WriteOnly)) {
         file.write(QJsonDocument(obj).toJson());

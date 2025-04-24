@@ -28,7 +28,7 @@ DebugWindow::DebugWindow(QWidget *parent) : QWidget(parent) {
 }
 
 void DebugWindow::updateLog() {
-    QString logPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../debug.log");
+    QString logPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/debug.log");
     QFile file(logPath);
 
     if (!file.exists())
@@ -48,7 +48,7 @@ void DebugWindow::updateLog() {
 }
 
 void DebugWindow::clearLog() {
-    QString logPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../debug.log");
+    QString logPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/debug.log");
     QFile file(QDir::cleanPath(logPath));
 
     if (file.exists()) {

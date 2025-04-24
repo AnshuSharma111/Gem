@@ -14,7 +14,7 @@ export async function sendMail({ to, subject, body }) {
   const bodyEncoded = encodeURIComponent(body);
   const toEncoded = encodeURIComponent(to);
 
-  const settingsPath = path.resolve(__dirname, "../../settings.json");
+  const settingsPath = path.resolve(__dirname, "../../config/settings.json");
   let preferredMethod = null;
   try {
     preferredMethod = JSON.parse(readFileSync(settingsPath, "utf8")).preferredMailMethod;

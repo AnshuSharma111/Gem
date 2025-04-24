@@ -2,8 +2,12 @@ import fs from "fs";
 import { execSync } from "child_process";
 import path from "path";
 import { logToFile } from "./logger.js";
+import { fileURLToPath } from "url";
 
-const stateFile = path.resolve("./assistant-state.json");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const stateFile = path.resolve(__dirname, "../../config/assistant-state.json");
 
 // --- Kill Process by PID (with fallback by name) ---
 function kill(pid, label, fallbackProcessName = null) {

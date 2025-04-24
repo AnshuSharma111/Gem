@@ -14,7 +14,7 @@ import Groq from "groq-sdk";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const summaryPath = path.resolve(__dirname, "../../manual_summary.json");
+const summaryPath = path.resolve(__dirname, "../../config/manual_summary.json");
 
 // Initialize Groq SDK
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });

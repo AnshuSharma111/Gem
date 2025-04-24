@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 configDotenv({ path: path.resolve(__dirname, "../../.env") });
 console.log("ENV path: ", path.resolve(__dirname, "../../.env"));
 
-const settingsPath = path.resolve(__dirname, "../../settings.json");
+const settingsPath = path.resolve(__dirname, "../../config/settings.json");
 
 export function getBlacklist() {
   let PUBLIC_IGNORED_WINDOWS, PUBLIC_IGNORED_APPS;;

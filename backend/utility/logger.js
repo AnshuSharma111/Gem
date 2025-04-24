@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Final log path — rooted at project root (2 levels up from /backend/utility/logger.js)
-const LOG_PATH = path.resolve(__dirname, "../../debug.log");
+const LOG_PATH = path.resolve(__dirname, "../../config/debug.log");
 console.log("Log path:", LOG_PATH);
 
 export function logToFile(label, data) {

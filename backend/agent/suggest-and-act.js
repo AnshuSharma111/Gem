@@ -13,8 +13,8 @@ const __dirname = path.dirname(__filename);
 
 configDotenv({ path: path.resolve(__dirname, "../../.env") });
 
-const RESPONSE_PATH = path.resolve(__dirname, "../../user_response.json");
-const SUGGESTION_PATH = path.resolve(__dirname, "../../latest_suggestion.json");
+const RESPONSE_PATH = path.resolve(__dirname, "../../config/user_response.json");
+const SUGGESTION_PATH = path.resolve(__dirname, "../../config/latest_suggestion.json");
 
 const cooldown = process.env.COOLDOWN || "12000"; // Time between prompting the user for a suggestion (in seconds)
 let lastSuggestionTime = 0; // Time of the last suggestion prompt

@@ -10,7 +10,7 @@ let threads = new Map(); // store threads in memory
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const THREAD_TTL_MS = 60 * 10 * 1000; // 10 minutes
-const THREADS_FILE = path.resolve(__dirname, "../../threads.json");
+const THREADS_FILE = path.resolve(__dirname, "../../config/threads.json");
 
 const IGNORED_APPS = getBlacklist().apps || [];
 const IGNORED_WINDOWS = getBlacklist().windows || [];

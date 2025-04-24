@@ -119,7 +119,7 @@ void SummaryText::onTimeout() {
 }
 
 void SummaryText::writeManualSummaryResponse(bool accepted, const QString &text) {
-    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../manual_summary.json");
+    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/manual_summary.json");
     QFile file(path);
     if (file.open(QIODevice::WriteOnly)) {
         QTextStream out(&file);

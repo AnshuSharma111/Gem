@@ -234,9 +234,7 @@ CMakeLists.txt.user*
 *.exe
 
 # Dev Files
-threads.json
-settings.json
-user_response.json
+config
 
 # CMake
 # Build results
