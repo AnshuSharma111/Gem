@@ -3,8 +3,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 
-import { randomUUID } from "crypto";
-
 import { logToFile } from "../utility/logger.js";
 import { getActiveThreads } from "../threads/thread-manager.js";
 import { suggestRelevantTools } from "./suggestion-agent.js";
@@ -23,8 +21,8 @@ let lastSuggestionTime = 0; // Time of the last suggestion prompt
 
 let llmIsBusy = false;
 
-function writeLatestSuggestion(suggestion) {
-    fs.writeFileSync(SUGGESTION_PATH, JSON.stringify(suggestion, null, 2));
+async function writeLatestSuggestion(suggestion) {
+    await fs.writeFileSync(SUGGESTION_PATH, JSON.stringify(suggestion, null, 2));
 }
 
 function waitForUserResponse(timeoutMs = 15000) {

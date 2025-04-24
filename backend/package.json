@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@screenpipe/js": "^1.0.21",
+    "clipboardy": "^4.0.0",
     "create-tauri-app": "^4.5.9",
     "dotenv": "^16.5.0",
     "groq-sdk": "^0.19.0",

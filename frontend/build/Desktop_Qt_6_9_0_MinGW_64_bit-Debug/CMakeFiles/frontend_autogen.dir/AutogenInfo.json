@@ -348,6 +348,18 @@
 			"MU",
 			"EWIEGA46WW/moc_suggestionpopup.cpp",
 			null
+		],
+		[
+			"D:/gem/frontend/summaryreadytoast.h",
+			"MU",
+			"EWIEGA46WW/moc_summaryreadytoast.cpp",
+			null
+		],
+		[
+			"D:/gem/frontend/summarytext.h",
+			"MU",
+			"EWIEGA46WW/moc_summarytext.cpp",
+			null
 		]
 	],
 	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
@@ -424,7 +436,9 @@
 		[ "D:/gem/frontend/debugwindow.cpp", "MU", null ],
 		[ "D:/gem/frontend/main.cpp", "MU", null ],
 		[ "D:/gem/frontend/mainwindow.cpp", "MU", null ],
-		[ "D:/gem/frontend/suggestionpopup.cpp", "MU", null ]
+		[ "D:/gem/frontend/suggestionpopup.cpp", "MU", null ],
+		[ "D:/gem/frontend/summaryreadytoast.cpp", "MU", null ],
+		[ "D:/gem/frontend/summarytext.cpp", "MU", null ]
 	],
 	"UIC_OPTIONS" : [],
 	"UIC_SEARCH_PATHS" : [],

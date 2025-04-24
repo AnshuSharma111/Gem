@@ -12,8 +12,13 @@ frontend_autogen/timestamp: \
 	D:/gem/frontend/mainwindow.h \
 	D:/gem/frontend/suggestionpopup.cpp \
 	D:/gem/frontend/suggestionpopup.h \
+	D:/gem/frontend/summaryreadytoast.cpp \
+	D:/gem/frontend/summaryreadytoast.h \
+	D:/gem/frontend/summarytext.cpp \
+	D:/gem/frontend/summarytext.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/QList \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/QObject \
+	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/QPropertyAnimation \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/QRect \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/QSize \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/QSizeF \
@@ -26,6 +31,7 @@ frontend_autogen/timestamp: \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/q20type_traits.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/q20utility.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/q23utility.h \
+	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qabstractanimation.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qabstracteventdispatcher.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qabstractitemmodel.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qalgorithms.h \
@@ -61,6 +67,7 @@ frontend_autogen/timestamp: \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qdatastream.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qdeadlinetimer.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qdebug.h \
+	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qeasingcurve.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qelapsedtimer.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qendian.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qeventloop.h \
@@ -103,6 +110,7 @@ frontend_autogen/timestamp: \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qpair.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qpoint.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qprocessordetection.h \
+	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qpropertyanimation.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qrect.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qrefcount.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qregularexpression.h \
@@ -156,6 +164,7 @@ frontend_autogen/timestamp: \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qurl.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qutf8stringview.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qvariant.h \
+	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qvariantanimation.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qvarlengtharray.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qversiontagging.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/qxptype_traits.h \
@@ -216,6 +225,7 @@ frontend_autogen/timestamp: \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/QListWidget \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/QMainWindow \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/QPlainTextEdit \
+	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/QProgressBar \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/QPushButton \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/QTabWidget \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/QTextEdit \
@@ -238,6 +248,7 @@ frontend_autogen/timestamp: \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/qlistwidget.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/qmainwindow.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/qplaintextedit.h \
+	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/qprogressbar.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/qpushbutton.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/qrubberband.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtWidgets/qsizepolicy.h \

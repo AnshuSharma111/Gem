@@ -12,6 +12,7 @@ class SuggestionPopup : public QWidget {
     Q_OBJECT
 private:
     static QList<SuggestionPopup*> activePopups;
+    QTimer *dismissTimer;
     void repositionStack();
 
 public:

@@ -18,6 +18,7 @@
 #include <QLineEdit>
 #include "suggestionpopup.h"
 #include "debugwindow.h"
+#include "summarytext.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -172,10 +173,34 @@ void MainWindow::sendResponse(bool accepted) {
 }
 
 void MainWindow::showSuggestion(const QString &text) {
-    SuggestionPopup *popup = new SuggestionPopup(text, nullptr);
+    SuggestionPopup *popup = new SuggestionPopup(text, this);
+
+    QStringList lines = text.split("\n");
+    QString action;
+
+    for (const QString &line : lines) {
+        if (line.startsWith("Suggested Action:")) {
+            action = line.section(':', 1).trimmed();
+            break;
+        }
+    }
 
     connect(popup, &SuggestionPopup::accepted, this, [=]() {
-        sendResponse(true);
+        qDebug() << action;
+        if (action == "summarise_pdf") {
+            SummaryText *summary = new SummaryText(this);
+            summary->slideIn();
+
+            connect(summary, &SummaryText::userAccepted, this, [=]() {
+                sendResponse(true);
+            });
+
+            connect(summary, &SummaryText::userRejected, this, [=]() {
+                sendResponse(true);
+            });
+        } else {
+            sendResponse(true);
+        }
     });
 
     connect(popup, &SuggestionPopup::rejected, this, [=]() {

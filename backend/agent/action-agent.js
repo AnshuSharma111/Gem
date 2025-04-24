@@ -1,4 +1,5 @@
 import path from "path";
+import fs from "fs/promises";
 import { configDotenv } from "dotenv";
 import { fileURLToPath } from "url";
 
@@ -6,11 +7,14 @@ import { logToFile } from "../utility/logger.js";
 import { parseLLMJson } from "../utility/llm-json-parser.js";
 
 import { sendMail } from "../tools/send-mail.js";
+import { summarisePdf } from "../tools/summarise-document.js";
 
 import Groq from "groq-sdk";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const summaryPath = path.resolve(__dirname, "../../manual_summary.json");
 
 // Initialize Groq SDK
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
@@ -27,6 +31,41 @@ export async function performAction(suggestion, thread) {
             return {
                 "success": false,
                 "message": "Empty suggestion or thread. Exiting performAction process."
+            }
+        }
+
+        // Override if action is summarise_pdf
+        if (suggestion.action === "summarise_pdf") {
+            try {
+                const manualText = await waitForManualSummary(10000);
+                let text;
+                for (const event of thread.events) {
+                    // Congregate text from all events
+                    if (event.text) {
+                        text += event.text + "\n";
+                    }
+                }
+
+                const content = manualText || text;
+
+                if (!content) {
+                    logToFile("❌ No content available for summarisation.");
+                    return { success: false, message: "No content" };
+                }
+
+                const result = await summarisePdf({ content });
+                return {
+                    "success": true,
+                    "message": "Action performed successfully.",
+                    "service_response": result.summary
+                }
+            }
+            catch (error) {
+                logToFile(`❌ Error in summarising PDF: ${error}`, "Source: action-agent [action-agent.js]");
+                return {
+                    "success": false,
+                    "message": error.message
+                };
             }
         }
 
@@ -81,9 +120,6 @@ export async function performAction(suggestion, thread) {
                     }
                 }
             }
-            else if (suggestion.action == "summarise_pdf") {
-                console.log("Emulating PDF summarization action...");
-            }
             else if (suggestion.action == "schedule_meeting") {
                 console.log("Emulating schedule meeting action...");
             }
@@ -134,9 +170,6 @@ function generatePrompt(suggestion, thread) {
         Events: ${JSON.stringify(thread.events, null, 2)}
         `
     }
-    else if (suggestion.action == "summarise_pdf") {
-        return `Summarise the PDF document with the following content:\n\n${thread.text}`;
-    }
     else if (suggestion.action == "schedule_meeting") {
         return `Create a calendar event with the following details:\n\n${thread.text}`;
     }
@@ -167,3 +200,38 @@ Suggestion format:
     "finalized": false
 }
  */
+
+export async function waitForManualSummary(maxWaitMs = 10000) {
+  const start = Date.now();
+
+  while (Date.now() - start < maxWaitMs) {
+    try {
+      const content = await fs.readFile(summaryPath, "utf8");
+
+      // Always try to clean up the file immediately
+      try {
+        await fs.unlink(summaryPath);
+      } catch (e) {
+        console.warn("⚠️ Could not delete summary file:", e.message);
+      }
+
+      const json = JSON.parse(content);
+      if (json.manual === false) return null;
+      if (json.manual === true && json.text?.trim()) return json.text.trim();
+
+    } catch (e) {
+      // Likely file doesn't exist yet — ignore silently
+    }
+
+    await new Promise(res => setTimeout(res, 500));
+  }
+
+  // Timeout: simulate user chose "No"
+  try {
+    await fs.writeFile(summaryPath, JSON.stringify({ manual: false }));
+  } catch (e) {
+    console.warn("⚠️ Failed to write timeout fallback file:", e.message);
+  }
+
+  return null;
+}

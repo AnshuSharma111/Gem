@@ -27,6 +27,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         suggestionpopup.cpp
         debugwindow.cpp
         debugwindow.h
+        summarytext.h
+        summarytext.cpp
+        summaryreadytoast.h
+        summaryreadytoast.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET frontend APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

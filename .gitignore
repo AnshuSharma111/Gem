@@ -594,3 +594,4 @@ tmp/
 Dockerfile.backend
 Dockerfile.gui
 docker-compose.yml
+manual_summary.json

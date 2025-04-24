@@ -99,16 +99,22 @@ SuggestionPopup::SuggestionPopup(const QString &message, QWidget *parent)
     barAnim->start(QAbstractAnimation::DeleteWhenStopped);
 
     // Auto-dismiss timer
-    QTimer::singleShot(15000, this, &SuggestionPopup::onReject);
+    dismissTimer = new QTimer(this);
+    dismissTimer->setSingleShot(true);
+    dismissTimer->setInterval(15000);
+    connect(dismissTimer, &QTimer::timeout, this, &SuggestionPopup::onReject);
+    dismissTimer->start();
 }
 
 void SuggestionPopup::onAccept() {
+    if (dismissTimer) dismissTimer->stop();
     activePopups.removeOne(this);
     emit accepted();
     close();
 }
 
 void SuggestionPopup::onReject() {
+    if (dismissTimer) dismissTimer->stop();
     activePopups.removeOne(this);
     emit rejected();
     close();
