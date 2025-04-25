@@ -589,7 +589,5 @@ tmp/
 /out/
 
 # Docker
-Dockerfile.backend
-Dockerfile.gui
+Dockerfile
 docker-compose.yml
-manual_summary.json

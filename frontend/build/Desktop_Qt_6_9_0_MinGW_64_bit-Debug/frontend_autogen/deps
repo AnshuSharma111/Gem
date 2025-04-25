@@ -12,8 +12,6 @@ frontend_autogen/timestamp: \
 	D:/gem/frontend/mainwindow.h \
 	D:/gem/frontend/suggestionpopup.cpp \
 	D:/gem/frontend/suggestionpopup.h \
-	D:/gem/frontend/summaryreadytoast.cpp \
-	D:/gem/frontend/summaryreadytoast.h \
 	D:/gem/frontend/summarytext.cpp \
 	D:/gem/frontend/summarytext.h \
 	E:/Programs/Qt/6.9.0/mingw_64/include/QtCore/QList \

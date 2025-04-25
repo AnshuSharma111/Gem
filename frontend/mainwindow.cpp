@@ -103,22 +103,44 @@ MainWindow::MainWindow(QWidget *parent)
     suggestionTimer->start(3000);
 }
 
+QString MainWindow::getConfigPath(const QString &filename) {
+    QString basePath;
+
+    // Priority 1: Environment variable (used in Docker container)
+    if (qEnvironmentVariableIsSet("GEM_CONFIG_PATH")) {
+        basePath = QString::fromUtf8(qgetenv("GEM_CONFIG_PATH"));
+    } else {
+        // Fallback for local dev: relative to the executable location
+        basePath = QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../../../config");
+    }
+
+    QDir configDir(basePath);
+    qDebug() << "Writing to:" << basePath;
+    return configDir.filePath(filename);
+}
+
 void MainWindow::onStartClicked() {
-    QString scriptPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../backend/utility/start-assistant.js");
+    QString devPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../backend/utility/start-assistant.js");
+    QString prodPath = QDir(QCoreApplication::applicationDirPath()).filePath("backend/utility/start-assistant.js");
+
+    QString scriptPath = QFile::exists(devPath) ? devPath : prodPath;
     QProcess::startDetached("node", QStringList() << QDir::cleanPath(scriptPath));
     statusLabel->setText("Status: Running...");
     this->showMinimized();
 }
 
 void MainWindow::onStopClicked() {
-    QString scriptPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../backend/utility/stop-assistant.js");
+    QString devPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../backend/utility/stop-assistant.js");
+    QString prodPath = QDir(QCoreApplication::applicationDirPath()).filePath("backend/utility/stop-assistant.js");
+
+    QString scriptPath = QFile::exists(devPath) ? devPath : prodPath;
     statusLabel->setText("Status: Stopped");
     QProcess::startDetached("node", QStringList() << QDir::cleanPath(scriptPath));
 }
 
 void MainWindow::savePreference() {
     QString selected = mailDropdown->currentText();
-    QString settingsPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/settings.json");
+    QString settingsPath = getConfigPath("settings.json");
 
     qDebug() << "Saving to:" << settingsPath;
     QFile file(settingsPath);
@@ -130,7 +152,7 @@ void MainWindow::savePreference() {
 }
 
 void MainWindow::loadSettings() {
-    QString settingsPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/settings.json");
+    QString settingsPath = getConfigPath("settings.json");
     QFile file(settingsPath);
     if (file.open(QIODevice::ReadOnly)) {
         QString json = file.readAll();
@@ -163,7 +185,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event) {
 }
 
 void MainWindow::sendResponse(bool accepted) {
-    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/user_response.json");
+    QString path = getConfigPath("user_response.json");
     QFile file(path);
     if (file.open(QIODevice::WriteOnly)) {
         QTextStream out(&file);
@@ -173,6 +195,7 @@ void MainWindow::sendResponse(bool accepted) {
 }
 
 void MainWindow::showSuggestion(const QString &text) {
+    qDebug() << "Triggering Show Suggestion";
     SuggestionPopup *popup = new SuggestionPopup(text, this);
 
     QStringList lines = text.split("\n");
@@ -209,7 +232,7 @@ void MainWindow::showSuggestion(const QString &text) {
 }
 
 void MainWindow::checkForSuggestion() {
-    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/latest_suggestion.json");
+    QString path = getConfigPath("latest_suggestion.json");
     QFile file(path);
 
     if (!file.exists()) return;
@@ -246,7 +269,7 @@ void MainWindow::saveBlacklistToSettings() {
     obj["blacklistedApps"] = apps;
     obj["blacklistedWindows"] = windows;
 
-    QString path = QDir(QCoreApplication::applicationDirPath()).filePath("../../../config/settings.json");
+    QString path = getConfigPath("settings.json");
     QFile file(path);
     if (file.open(QIODevice::WriteOnly)) {
         file.write(QJsonDocument(obj).toJson());

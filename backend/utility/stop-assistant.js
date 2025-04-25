@@ -27,7 +27,6 @@ function kill(pid, label, fallbackProcessName = null) {
     }
   }
 
-  // Only run fallback if PID was missing or failed
   if (fallbackProcessName && process.platform === "win32") {
     try {
       execSync(`taskkill /IM ${fallbackProcessName} /F /T`);
@@ -39,6 +38,17 @@ function kill(pid, label, fallbackProcessName = null) {
   }
 }
 
+// --- WSL-safe Redis Kill ---
+function killRedisWSL() {
+  try {
+    execSync(`wsl -e pkill -f redis-server`);
+    console.log("🛑 Redis (inside WSL) stopped");
+    logToFile("🛑 STOPPED Redis", "Killed via wsl:pkill");
+  } catch (err) {
+    console.error("❌ Failed to kill Redis in WSL:", err.message);
+  }
+}
+
 // --- Main Stop Routine ---
 if (!fs.existsSync(stateFile)) {
   console.log("No assistant state found. Is it running?");
@@ -47,20 +57,11 @@ if (!fs.existsSync(stateFile)) {
 
 const state = JSON.parse(fs.readFileSync(stateFile, "utf8"));
 
-// Kill both with fallback
-if (state.pollerPID) {
-  kill(state.pollerPID, "Poller", "node.exe");
-} else {
-  kill(null, "Poller", "node.exe");
-}
+kill(state.pollerPID, "Poller", "node.exe");
+kill(state.screenpipePID, "Screenpipe", "screenpipe.exe");
+killRedisWSL();  // ✅ Updated Redis handling
 
-if (state.screenpipePID) {
-  kill(state.screenpipePID, "Screenpipe", "screenpipe.exe");
-} else {
-  kill(null, "Screenpipe", "screenpipe.exe");
-}
-
-// Remove state file
+// Cleanup
 try {
   fs.unlinkSync(stateFile);
   console.log("✅ Assistant fully stopped");

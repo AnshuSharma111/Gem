@@ -13,10 +13,9 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        # mainwindow.ui
+    main.cpp
+    mainwindow.cpp
+    mainwindow.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -29,35 +28,24 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         debugwindow.h
         summarytext.h
         summarytext.cpp
-        summaryreadytoast.h
-        summaryreadytoast.cpp
+
+
     )
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET frontend APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
-        add_library(frontend SHARED
-            ${PROJECT_SOURCES}
-        )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
+        add_library(frontend SHARED ${PROJECT_SOURCES})
     else()
-        add_executable(frontend
-            ${PROJECT_SOURCES}
-        )
+        add_executable(frontend ${PROJECT_SOURCES})
     endif()
 endif()
 
 target_link_libraries(frontend PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
+# Set properties for macOS/iOS
 if(${QT_VERSION} VERSION_LESS 6.1.0)
-  set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.frontend)
+    set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.frontend)
 endif()
+
 set_target_properties(frontend PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
@@ -65,6 +53,16 @@ set_target_properties(frontend PROPERTIES
     MACOSX_BUNDLE TRUE
     WIN32_EXECUTABLE TRUE
 )
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/../config")
+    add_custom_command(TARGET frontend POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_SOURCE_DIR}/../config"
+        "$<TARGET_FILE_DIR:frontend>/config"
+    )
+endif()
+
+install(DIRECTORY config DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 include(GNUInstallDirs)
 install(TARGETS frontend

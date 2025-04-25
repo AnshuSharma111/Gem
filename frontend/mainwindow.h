@@ -29,6 +29,7 @@ private slots:
     void checkForSuggestion();
     void removeSelectedApp();
     void removeSelectedWindow();
+    QString getConfigPath(const QString& filename);
 
 private:
     QPushButton *startButton;

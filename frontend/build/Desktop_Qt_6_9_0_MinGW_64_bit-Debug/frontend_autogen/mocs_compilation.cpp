@@ -2,5 +2,4 @@
 #include "EWIEGA46WW/moc_debugwindow.cpp"
 #include "EWIEGA46WW/moc_mainwindow.cpp"
 #include "EWIEGA46WW/moc_suggestionpopup.cpp"
-#include "EWIEGA46WW/moc_summaryreadytoast.cpp"
 #include "EWIEGA46WW/moc_summarytext.cpp"

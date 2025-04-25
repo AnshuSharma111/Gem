@@ -15,29 +15,40 @@ const stateFile = path.resolve(__dirname, "../../config/assistant-state.json");
 // Load .env from project root
 configDotenv({ path: path.resolve(__dirname, "../../.env") });
 
-// --- Save Poller PID ---
-function savePollerPID(pollerPID) {
+// --- PID Save Helpers ---
+function updateState(update) {
   let current = {};
   if (fs.existsSync(stateFile)) {
     current = JSON.parse(fs.readFileSync(stateFile, "utf8"));
   }
-  const updated = { ...current, pollerPID };
+  const updated = { ...current, ...update };
   fs.writeFileSync(stateFile, JSON.stringify(updated, null, 2));
+}
+
+// --- Launch Redis via WSL ---
+function launchRedisViaWSL() {
+  const redisProc = spawn("wsl", ["redis-server"], {
+    detached: true,
+    stdio: "ignore"
+  });
+  redisProc.unref();
+  updateState({ redisPID: redisProc.pid });
+  logToFile("🟥 REDIS", `Launched via WSL (PID: ${redisProc.pid})`);
+  console.log("✅ Redis launched via WSL");
 }
 
 // --- Launch Screenpipe ---
 function launchScreenpipe() {
   const cmd = "screenpipe";
-
   const child = exec(cmd, {
     windowsHide: false
   });
-
-  logToFile("🎬 SCREENPIPE", `Launched via exec`);
+  updateState({ screenpipePID: child.pid });
+  logToFile("🎬 SCREENPIPE", `Launched via exec (PID: ${child.pid})`);
   console.log("✅ Screenpipe launched");
 }
 
-// --- Wait for /health endpoint ---
+// --- Wait for Screenpipe /health ---
 async function waitForHealth(timeoutMs = 15000) {
   const url = `http://localhost:${process.env.SCREENPIPE_PORT || 3030}/health`;
   const deadline = Date.now() + timeoutMs;
@@ -50,9 +61,7 @@ async function waitForHealth(timeoutMs = 15000) {
         console.log("✅ Screenpipe is healthy!");
         return true;
       }
-    } catch {
-      // retry
-    }
+    } catch {}
     await sleep(1000);
   }
 
@@ -70,13 +79,14 @@ function launchPoller() {
   });
 
   poller.unref();
-  savePollerPID(poller.pid);
+  updateState({ pollerPID: poller.pid });
   logToFile("🧠 POLLER", `Launched (PID: ${poller.pid})`);
   console.log("🚀 Poller launched");
 }
 
 // --- Orchestrator ---
 async function startAssistantFlow() {
+  launchRedisViaWSL();
   launchScreenpipe();
 
   try {

@@ -122,12 +122,21 @@ function getRelevantThreadsByKeywords(keywords = []) {
   });
 }
 
-// save threads to disk, called whenever a thread is added or modified
 function saveThreadsToDisk() {
   const obj = Object.fromEntries(threads);
+  const resolvedPath = path.resolve(THREADS_FILE);
+  const workingDir = process.cwd();
+
+  logToFile("💾 Saving threads to", {
+    path: resolvedPath,
+    cwd: workingDir,
+    __dirname
+  });
+
   fs.mkdirSync(path.dirname(THREADS_FILE), { recursive: true });
   fs.writeFileSync(THREADS_FILE, JSON.stringify(obj, null, 2));
 }
+
 
 function loadThreadsFromDisk() {
   try {
