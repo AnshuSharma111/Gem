@@ -62,8 +62,6 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/../config")
     )
 endif()
 
-install(DIRECTORY config DESTINATION ${CMAKE_INSTALL_BINDIR})
-
 include(GNUInstallDirs)
 install(TARGETS frontend
     BUNDLE DESTINATION .

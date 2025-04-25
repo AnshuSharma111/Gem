@@ -17,13 +17,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 65,
-				"parent" : 0
-			},
-			{
-				"command" : 0,
-				"file" : 0,
-				"line" : 68,
+				"line" : 66,
 				"parent" : 0
 			}
 		]
@@ -32,16 +26,6 @@
 	[
 		{
 			"backtrace" : 1,
-			"component" : "Unspecified",
-			"destination" : "bin",
-			"paths" : 
-			[
-				"config"
-			],
-			"type" : "directory"
-		},
-		{
-			"backtrace" : 2,
 			"component" : "Unspecified",
 			"destination" : "bin",
 			"paths" : 
