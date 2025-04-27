@@ -25,6 +25,7 @@ By introducing real-time assistance that actively understands and adapts to the 
 Gem is a next-generation AI agent designed to assist users seamlessly in their everyday tasks.
 Unlike traditional AI assistants that passively wait for instructions, Gem actively observes the user's screen, intelligently searching for opportunities to help.
 When it detects something it can assist with, Gem proactively prompts the user — offering support exactly when it's needed.
+
 ---
 
 ## 🧠 Team & Approach
