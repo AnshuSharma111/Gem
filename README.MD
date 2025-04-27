@@ -97,11 +97,17 @@ The key features of Gem are as follows:
 
 ## 🧬 Future Scope
 
-List improvements, extensions, or follow-up features:
+What’s Next for Gem:
+📈 Expanding Tools and Capabilities
+Thanks to Gem’s modular architecture, the core boilerplate is already in place — making it easy to build and expand.
+We can rapidly add new tools, such as scheduling meetings, taking notes, and much more, tailored to user needs.
 
-- 📈 More Tools: Due to the structure of Gem, the boiler plate code has been set up and the only thing remaining are the expansions. We can add as many tools we want to add on top of it. For example, Book a meeting on calendar, Make Notes for the user and so on.
-- 🛡️ Enhanced privacy controls: We can give the user more freedom over what is monitored on their screen. Even give them the option to switch to offline LLMs via Ollama
-- 🌐 Localization / broader accessibility : 
+🛡️ Stronger Privacy Controls
+Future updates will give users even greater control over what Gem monitors.
+Users will also have the option to switch to fully offline LLMs (such as through Ollama) for maximum privacy and local processing.
+
+🌐 Localization and Accessibility
+We plan to make Gem accessible to a global audience by introducing multi-language support and improving accessibility features — ensuring everyone can benefit from real-time assistance.
 
 ---
 
