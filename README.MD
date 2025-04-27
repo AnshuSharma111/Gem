@@ -13,9 +13,18 @@
 ---
 
 ## 🎯 Objective
+Traditional AI assistants often feel unresponsive and rigid, behaving more like preprogrammed robots that passively wait for user commands.
+This stiffness makes interactions feel unnatural and disconnected.
 
-Gem is a next generation AI agent that helps the user in their everyday tasks. Unlike traditional AI assistants that wait for the user to ask them for help, Gem actively searches for tasks it can do in the screen to aid the user and prompts the user whenver it finds something it can help with
+Additionally, most traditional agents operate without real awareness of what the user is doing, acting only when explicitly told to.
+They function like isolated machines, reactive rather than proactive.
 
+While this design still works today, it leaves much room for improvement.
+By introducing real-time assistance that actively understands and adapts to the user’s context, we can create a far more fluid, helpful, and human-like experience.
+
+Gem is a next-generation AI agent designed to assist users seamlessly in their everyday tasks.
+Unlike traditional AI assistants that passively wait for instructions, Gem actively observes the user's screen, intelligently searching for opportunities to help.
+When it detects something it can assist with, Gem proactively prompts the user — offering support exactly when it's needed.
 ---
 
 ## 🧠 Team & Approach
@@ -49,7 +58,7 @@ Byte Warriors
 
 ## ✨ Key Features
 
-Highlight the most important features of your project:
+The key features of Gem are as follows:
 
 - ✅ Real-time Agent: Gem works when you work. Just switch her ON and she will observe what is going on in the screen and chip in to help 
 - ✅ Fast and Alive agent: Due to Groq, the processing of data through 5 layers is fast and therefore, Gem acts fast. She feels responsive and smooth 
