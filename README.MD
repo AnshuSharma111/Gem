@@ -2,7 +2,7 @@
 
 # 🚀 Project Title
 
-> A one-line tagline or mission statement for your project.
+> Gem - Your Real Time AI Assistant
 
 ---
 
