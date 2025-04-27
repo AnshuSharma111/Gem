@@ -9,6 +9,7 @@
 #include <QKeyEvent>
 #include <QListWidget>
 #include <QLabel>
+#include <QPropertyAnimation>
 #include "debugwindow.h"
 
 class MainWindow : public QMainWindow {
@@ -41,6 +42,7 @@ private:
     QComboBox *mailDropdown;
 
     QLabel *statusLabel;
+    QLabel *loadingLabel;
 
     QTabWidget *tabWidget;
     DebugWindow *debugWindow;
@@ -59,6 +61,13 @@ private:
     int debugTabIndex;
 
     void loadSettings();
+
+    QTimer* healthCheckTimer = nullptr;
+    void startHealthCheck();
+    QTimer* loadingTextTimer = nullptr;
+    int loadingDotCount = 0;
+
+    QPropertyAnimation *loadingAnimation;
 };
 
 #endif // MAINWINDOW_H

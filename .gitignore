@@ -591,3 +591,6 @@ tmp/
 # Docker
 Dockerfile
 docker-compose.yml
+
+# installer
+installer.iss

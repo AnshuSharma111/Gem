@@ -16,6 +16,12 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMessageBox>
+#include <QMovie>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QPropertyAnimation>
 #include "suggestionpopup.h"
 #include "debugwindow.h"
 #include "summarytext.h"
@@ -33,11 +39,14 @@ MainWindow::MainWindow(QWidget *parent)
     startButton = new QPushButton("Start");
     stopButton = new QPushButton("Stop");
     statusLabel = new QLabel("Status: Idle", this);
+    loadingLabel = new QLabel("", this);
+    loadingLabel->setAlignment(Qt::AlignCenter);
 
     buttonLayout->addWidget(startButton);
     buttonLayout->addWidget(stopButton);
     mainLayout->addLayout(buttonLayout);
     mainLayout->addWidget(statusLabel);
+    mainLayout->addWidget(loadingLabel);
 
     // --- Settings Layout ---
     QWidget *settingsTab = new QWidget();
@@ -81,6 +90,9 @@ MainWindow::MainWindow(QWidget *parent)
     settingsTab->setLayout(settingsLayout);
     mainLayout->addWidget(settingsTab);
 
+    // Start... Animation
+    loadingAnimation = new QPropertyAnimation(loadingLabel, "windowOpacity", this);
+
     // Debug window
     debugWindow = new DebugWindow(nullptr);
     debugWindow->hide();
@@ -104,38 +116,129 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 QString MainWindow::getConfigPath(const QString &filename) {
-    QString basePath;
-
-    // Priority 1: Environment variable (used in Docker container)
-    if (qEnvironmentVariableIsSet("GEM_CONFIG_PATH")) {
-        basePath = QString::fromUtf8(qgetenv("GEM_CONFIG_PATH"));
-    } else {
-        // Fallback for local dev: relative to the executable location
-        basePath = QDir::cleanPath(QCoreApplication::applicationDirPath() + "/../../../config");
-    }
-
-    QDir configDir(basePath);
-    qDebug() << "Writing to:" << basePath;
-    return configDir.filePath(filename);
+    return QDir(QCoreApplication::applicationDirPath()).filePath("config/" + filename);
 }
 
 void MainWindow::onStartClicked() {
-    QString devPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../backend/utility/start-assistant.js");
-    QString prodPath = QDir(QCoreApplication::applicationDirPath()).filePath("backend/utility/start-assistant.js");
+    QString scriptPath = QDir(QCoreApplication::applicationDirPath()).filePath("backend/utility/start-assistant.js");
 
-    QString scriptPath = QFile::exists(devPath) ? devPath : prodPath;
-    QProcess::startDetached("node", QStringList() << QDir::cleanPath(scriptPath));
-    statusLabel->setText("Status: Running...");
-    this->showMinimized();
+    // Start backend detached
+    bool success = QProcess::startDetached("node", QStringList() << scriptPath);
+
+    if (!success) {
+        QMessageBox::critical(this, "Error", "Failed to start backend process.");
+        statusLabel->setText("Status: Backend start failed");
+        return;
+    }
+
+    qDebug() << "Backend process started (detached)";
+
+    // Setup loading animation text
+    if (loadingTextTimer) {
+        loadingTextTimer->stop();
+        loadingTextTimer->deleteLater();
+    }
+    loadingDotCount = 0;
+    loadingTextTimer = new QTimer(this);
+
+    connect(loadingTextTimer, &QTimer::timeout, this, [=]() {
+        loadingDotCount = (loadingDotCount + 1) % 4;
+        QString dots(loadingDotCount, '.');
+        if (loadingLabel) {
+            loadingLabel->setText("Starting" + dots);
+        }
+    });
+
+    loadingTextTimer->start(500);
+
+    // Create a simple opacity animation
+    if (loadingAnimation) {
+        loadingAnimation->stop();
+        loadingAnimation->deleteLater();
+    }
+
+    loadingAnimation = new QPropertyAnimation(loadingLabel, "windowOpacity", this);
+    loadingAnimation->setDuration(1500);
+    loadingAnimation->setStartValue(0.2);
+    loadingAnimation->setEndValue(1.0);
+    loadingAnimation->setEasingCurve(QEasingCurve::InOutSine);
+    loadingAnimation->setLoopCount(-1); // infinite loop
+    loadingAnimation->start();
+    statusLabel->setText("Status: Starting...");
+
+    // Start health check polling
+    startHealthCheck();
+}
+
+void MainWindow::startHealthCheck() {
+    if (healthCheckTimer) {
+        healthCheckTimer->stop();
+        healthCheckTimer->deleteLater();
+    }
+
+    int retries = 0;
+    const int maxRetries = 20; // Retry 20 times = 20s timeout
+
+    healthCheckTimer = new QTimer(this);
+
+    connect(healthCheckTimer, &QTimer::timeout, this, [=]() mutable {
+        QNetworkAccessManager *nam = new QNetworkAccessManager(this);
+        QNetworkRequest req(QUrl("http://localhost:3030/health"));
+        auto reply = nam->get(req);
+
+        connect(reply, &QNetworkReply::finished, this, [=]() mutable {
+            if (reply->error() == QNetworkReply::NoError) {
+                // Health OK
+                statusLabel->setText("Status: Running!");
+                if (loadingTextTimer) {
+                    loadingTextTimer->stop();
+                    loadingTextTimer->deleteLater();
+                    loadingTextTimer = nullptr;
+                }
+                loadingLabel->clear();
+
+                healthCheckTimer->stop();
+                healthCheckTimer->deleteLater();
+                healthCheckTimer = nullptr;
+
+                reply->deleteLater();
+                nam->deleteLater();
+
+                this->showMinimized();
+                return;
+            }
+
+            retries++;
+            if (retries >= maxRetries) {
+                // Health failed after max retries
+                if (loadingTextTimer) {
+                    loadingTextTimer->stop();
+                    loadingTextTimer->deleteLater();
+                    loadingTextTimer = nullptr;
+                }
+
+                healthCheckTimer->stop();
+                healthCheckTimer->deleteLater();
+                healthCheckTimer = nullptr;
+
+                statusLabel->setText("Status: Failed to start backend");
+                loadingLabel->setText("Failed to Start.");
+                QMessageBox::critical(this, "Error", "Backend did not become healthy in time.");
+            }
+
+            reply->deleteLater();
+            nam->deleteLater();
+        });
+    });
+
+    healthCheckTimer->start(1000); // Check every second
 }
 
 void MainWindow::onStopClicked() {
-    QString devPath = QDir(QCoreApplication::applicationDirPath()).filePath("../../../backend/utility/stop-assistant.js");
-    QString prodPath = QDir(QCoreApplication::applicationDirPath()).filePath("backend/utility/stop-assistant.js");
+    QString scriptPath = QDir(QCoreApplication::applicationDirPath()).filePath("backend/utility/stop-assistant.js");
 
-    QString scriptPath = QFile::exists(devPath) ? devPath : prodPath;
+    QProcess::startDetached("node", QStringList() << scriptPath);
     statusLabel->setText("Status: Stopped");
-    QProcess::startDetached("node", QStringList() << QDir::cleanPath(scriptPath));
 }
 
 void MainWindow::savePreference() {

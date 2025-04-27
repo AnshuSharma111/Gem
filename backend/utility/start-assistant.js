@@ -25,11 +25,56 @@ function updateState(update) {
   fs.writeFileSync(stateFile, JSON.stringify(updated, null, 2));
 }
 
+// --- Check if Screenpipe is Installed ---
+function checkScreenpipeExists() {
+  return new Promise((resolve, reject) => {
+    exec("where screenpipe", (error, stdout) => {
+      if (error || !stdout.trim()) {
+        reject(new Error("Screenpipe required to run app"));
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+// --- Check if WSL is Installed ---
+function checkWSLExists() {
+  return new Promise((resolve) => {
+    exec("where wsl", (error, stdout) => {
+      resolve(!error && stdout.trim());
+    });
+  });
+}
+
+// --- Check if Redis is Installed in WSL ---
+function checkRedisExistsInWSL() {
+  return new Promise((resolve) => {
+    exec("wsl which redis-server", (error, stdout) => {
+      resolve(!error && stdout.trim());
+    });
+  });
+}
+
 // --- Launch Redis via WSL ---
-function launchRedisViaWSL() {
+async function launchRedisViaWSL() {
+  const wslExists = await checkWSLExists();
+  if (!wslExists) {
+    console.warn("⚠️ WSL not found, skipping Redis launch");
+    logToFile("⚠️ WSL CHECK", "WSL not found, skipping Redis launch");
+    return;
+  }
+
+  const redisExists = await checkRedisExistsInWSL();
+  if (!redisExists) {
+    console.warn("⚠️ redis-server not found inside WSL, skipping Redis launch");
+    logToFile("⚠️ REDIS CHECK", "redis-server not found inside WSL, skipping Redis launch");
+    return;
+  }
+
   const redisProc = spawn("wsl", ["redis-server"], {
     detached: true,
-    stdio: "ignore"
+    stdio: "ignore",
   });
   redisProc.unref();
   updateState({ redisPID: redisProc.pid });
@@ -39,9 +84,8 @@ function launchRedisViaWSL() {
 
 // --- Launch Screenpipe ---
 function launchScreenpipe() {
-  const cmd = "screenpipe";
-  const child = exec(cmd, {
-    windowsHide: false
+  const child = exec("screenpipe", {
+    windowsHide: false,
   });
   updateState({ screenpipePID: child.pid });
   logToFile("🎬 SCREENPIPE", `Launched via exec (PID: ${child.pid})`);
@@ -59,25 +103,22 @@ async function waitForHealth(timeoutMs = 15000) {
       if (res.ok) {
         logToFile("🩺 HEALTH CHECK", "Screenpipe is healthy and ready");
         console.log("✅ Screenpipe is healthy!");
-        return true;
+        return;
       }
     } catch {}
     await sleep(1000);
   }
 
-  logToFile("❌ TIMEOUT", "Screenpipe did not respond in time");
   throw new Error("❌ Screenpipe health check timed out");
 }
 
 // --- Launch screenpipe-poller ---
 function launchPoller() {
   const pollerPath = path.resolve(__dirname, "../ocr/screenpipe-poller.js");
-
   const poller = spawn("node", [pollerPath], {
     detached: true,
-    stdio: "inherit"
+    stdio: "inherit",
   });
-
   poller.unref();
   updateState({ pollerPID: poller.pid });
   logToFile("🧠 POLLER", `Launched (PID: ${poller.pid})`);
@@ -86,15 +127,32 @@ function launchPoller() {
 
 // --- Orchestrator ---
 async function startAssistantFlow() {
-  launchRedisViaWSL();
-  launchScreenpipe();
+  try {
+    await checkScreenpipeExists();
+  } catch (err) {
+    logToFile("❌ SCREENPIPE", "Screenpipe not found. Please install it.");
+    console.error(err.message);
+    process.exit(1);
+  }
+
+  try {
+    launchRedisViaWSL();
+    launchScreenpipe();
+  } catch (err) {
+    logToFile("❌ LAUNCH ERROR", "Failed to launch Redis or Screenpipe");
+    console.error("Failed to launch Redis or Screenpipe:", err.message);
+    process.exit(1);
+  }
 
   try {
     await waitForHealth();
     launchPoller();
   } catch (err) {
+    logToFile("❌ HEALTH CHECK", "Screenpipe health check failed");
     console.error(err.message);
+    process.exit(1);
   }
+  logToFile("✅ Gem", "Gem started successfully");
 }
 
-startAssistantFlow();
+await startAssistantFlow();
