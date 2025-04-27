@@ -8,108 +8,79 @@
 
 ## 📌 Problem Statement
 
-Select the problem statement number and title from the official list given in Participant Manual.
-
-**Example:**  
-**Problem Statement 7 – Transform the Future of Rural Commerce**
+**Problem Statement 5 – Build the future of AI Computer Control with Screenpipe's Terminator**
 
 ---
 
 ## 🎯 Objective
 
-What problem does your project solve, and who does it serve?  
-Briefly describe the real-world use case and the value it provides.
+Gem is a next generation AI agent that helps the user in their everyday tasks. Unlike traditional AI assistants that wait for the user to ask them for help, Gem actively searches for tasks it can do in the screen to aid the user and prompts the user whenver it finds something it can help with
 
 ---
 
 ## 🧠 Team & Approach
 
 ### Team Name:  
-`Your team name here`
+Byte Bandits
 
 ### Team Members:  
-- Name 1 (GitHub / LinkedIn / Role)  
-- Name 2  
-- Name 3  
-*(Add links if you want)*
+- Anshu Sharma (AnshuSharma111 / https://www.linkedin.com/in/anshu-sharma-618917287/ / Leader)  
+- Hardik Kumar (hardikgoesgit/ https://www.linkedin.com/in/hardik-kumar-rrh/ /member)
 
 ### Your Approach:  
-- Why you chose this problem  
-- Key challenges you addressed  
-- Any pivots, brainstorms, or breakthroughs during hacking  
+- We chose this problem because it seemed like the one most fun to tackle and the one we would have the most fun building
+- One of the biggest challenges we faced was trying to get the Screenpipe SDK to work. Apart from that, creating the installer and making sure it worked propely also took it's fair share of time
+- A key point of building Gem was designing it's architecture. Trying to keep it responsive and fast while also processing huge amounts of data through LLMs. The 5 layer architecture is something we are most proud of
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Core Technologies Used:
-- Frontend:
-- Backend:
-- Database:
-- APIs:
-- Hosting:
+- Frontend: C++, Qt6
+- Backend: Javascript, NodeJS, Redis
+- APIs: Groq SDK, Screenpipe SDK
+- Hosting: None, installer for windows
 
 ### Sponsor Technologies Used (if any):
-- [ ] **Groq:** _How you used Groq_  
-- [ ] **Monad:** _Your blockchain implementation_  
-- [ ] **Fluvio:** _Real-time data handling_  
-- [ ] **Base:** _AgentKit / OnchainKit / Smart Wallet usage_  
-- [ ] **Screenpipe:** _Screen-based analytics or workflows_  
-- [ ] **Stellar:** _Payments, identity, or token usage_
-*(Mark with ✅ if completed)*
+- [✅] **Groq:** We used Groq for fast, low latency processing of data from screenpipe. From cleaning that data to suggesting actions by performing sentiment analysis on it, Groq provided a fast and reliable API with various available LLMs to use. 
+- [✅] **Screenpipe:** We used Screenpipe to peerform OCR and get data of what is happening on the user's screen so that the LLM can suggest some actions
 ---
 
 ## ✨ Key Features
 
 Highlight the most important features of your project:
 
-- ✅ Feature 1  
-- ✅ Feature 2  
-- ✅ Feature 3  
-- ✅ Feature 4  
+- ✅ Real-time Agent: Gem works when you work. Just switch her ON and she will observe what is going on in the screen and chip in to help 
+- ✅ Fast and Alive agent: Due to Groq, the processing of data through 5 layers is fast and therefore, Gem acts fast. She feels responsive and smooth 
+- ✅ Privacy Controls: You can select what apps you do not want Gem to monitor and she won't monitor those apps. This ensures user privacy
+- ✅ Logs: The user can press Ctrl + Shift + D on their keyboards when Gem is open and this will open the Debug Log Viewer where the user can safely monitor all activity Gem is doing
 
-Add images, GIFs, or screenshots if helpful!
+<Photos>
 
 ---
 
 ## 📽️ Demo & Deliverables
 
-- **Demo Video Link:** [Paste YouTube or Loom link here]  
+- **Demo Video Link:** https://youtu.be/5jpG8ykBkFY
 - **Pitch Deck / PPT Link:** [Paste Google Slides / PDF link here]  
 
 ---
 
 ## ✅ Tasks & Bonus Checklist
 
-- [ ] **All members of the team completed the mandatory task - Followed at least 2 of our social channels and filled the form** (Details in Participant Manual)  
-- [ ] **All members of the team completed Bonus Task 1 - Sharing of Badges and filled the form (2 points)**  (Details in Participant Manual)
-- [ ] **All members of the team completed Bonus Task 2 - Signing up for Sprint.dev and filled the form (3 points)**  (Details in Participant Manual)
-
-*(Mark with ✅ if completed)*
+- [✅] **All members of the team completed the mandatory task - Followed at least 2 of our social channels and filled the form** (Details in Participant Manual)  
+- [✅] **All members of the team completed Bonus Task 1 - Sharing of Badges and filled the form (2 points)**  (Details in Participant Manual)
+- [✅] **All members of the team completed Bonus Task 2 - Signing up for Sprint.dev and filled the form (3 points)**  (Details in Participant Manual)
 
 ---
 
 ## 🧪 How to Run the Project
 
-### Requirements:
-- Node.js / Python / Docker / etc.
-- API Keys (if any)
-- .env file setup (if needed)
-
-### Local Setup:
-```bash
-# Clone the repo
-git clone https://github.com/your-team/project-name
-
-# Install dependencies
-cd project-name
-npm install
-
-# Start development server
-npm run dev
-```
-
-Provide any backend/frontend split or environment setup notes here.
+[FOR WINDOWS ONLY]
+1) Go to screenpipe's repository and install screenpipe on your machine: https://github.com/mediar-ai/screenpipe/tree/main using the command given there
+2) Download the installer from this link: https://drive.google.com/file/d/1tp6eun473hlaHl6h7f8ktVwSbGr6LLUR/view?usp=sharing
+3) [Optional] Have wsl installed on your system and have redis installed in it
 
 ---
 
@@ -117,22 +88,21 @@ Provide any backend/frontend split or environment setup notes here.
 
 List improvements, extensions, or follow-up features:
 
-- 📈 More integrations  
-- 🛡️ Security enhancements  
-- 🌐 Localization / broader accessibility  
+- 📈 More Tools: Due to the structure of Gem, the boiler plate code has been set up and the only thing remaining are the expansions. We can add as many tools we want to add on top of it. For example, Book a meeting on calendar, Make Notes for the user and so on.
+- 🛡️ Enhanced privacy controls: We can give the user more freedom over what is monitored on their screen. Even give them the option to switch to offline LLMs via Ollama
+- 🌐 Localization / broader accessibility : 
 
 ---
 
 ## 📎 Resources / Credits
 
-- APIs or datasets used  
-- Open source libraries or tools referenced  
-- Acknowledgements  
+- Groq SDK: https://console.groq.com/home
+- Screenpipe SDK: https://docs.screenpi.pe/terminator/js-sdk-reference
 
 ---
 
 ## 🏁 Final Words
 
-Share your hackathon journey — challenges, learnings, fun moments, or shout-outs!
+It was a lot of fun building this application. We are grateful to the organisers for holding such a well organised event at such a large scale. We are also grateful to our fellow participants for making this event such a resounding success. May the best hacker win! Cheers!
 
 ---
