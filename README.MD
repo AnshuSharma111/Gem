@@ -21,7 +21,7 @@ Gem is a next generation AI agent that helps the user in their everyday tasks. U
 ## 🧠 Team & Approach
 
 ### Team Name:  
-Byte Bandits
+Byte Warriors
 
 ### Team Members:  
 - Anshu Sharma (AnshuSharma111 / https://www.linkedin.com/in/anshu-sharma-618917287/ / Leader)  
