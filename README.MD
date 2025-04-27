@@ -56,14 +56,16 @@ Highlight the most important features of your project:
 - ✅ Privacy Controls: You can select what apps you do not want Gem to monitor and she won't monitor those apps. This ensures user privacy
 - ✅ Logs: The user can press Ctrl + Shift + D on their keyboards when Gem is open and this will open the Debug Log Viewer where the user can safely monitor all activity Gem is doing
 
-<Photos>
+![My Project Logo](assets/logimage.png)
+![My Project Logo](assets/summarisepdfimage.jpg)
+![My Project Logo](assets/summarisetext.jpg)
 
 ---
 
 ## 📽️ Demo & Deliverables
 
 - **Demo Video Link:** https://youtu.be/5jpG8ykBkFY
-- **Pitch Deck / PPT Link:** [Paste Google Slides / PDF link here]  
+- **Pitch Deck / PPT Link:** https://drive.google.com/file/d/1CXftla3AkGVlX71vDFoeN-hpR5tK2d40/view?usp=sharing
 
 ---
 
